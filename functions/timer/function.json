@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "incrementalSync",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 */30 3-23 * * *",
+      "runOnStartup": false
+    }
+  ]
+}

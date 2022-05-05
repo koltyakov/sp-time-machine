@@ -1,0 +1,11 @@
+.git*
+.vscode
+local.settings.json
+local.settings.sample.json
+test
+
+tmp
+.env
+*.go
+go.mod
+go.sum

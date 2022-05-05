@@ -1,0 +1,6 @@
+subscription_id = "529f730b-4ac8-43b6-9851-221e735a71cf"
+location        = "westus2"
+function_app    = "sp-time-machine"
+sp_source_creds = "{}"
+sp_target_creds = "{}"
+sp_master_key   = "secret"

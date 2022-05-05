@@ -1,0 +1,27 @@
+{
+  "$schema": "./pkg/config/schema.json",
+  "provider": "tables",
+  "state": "tables",
+  "lists": {
+    "Lists/SPFTSheetsJobs": {
+      "description": "Jobs",
+      "fields": ["*"]
+    },
+    "Lists/SPFTSheetsJobs1": {
+      "description": "Jobs 1",
+      "fields": ["*"]
+    },
+    "Lists/SPFTSheetsGroups": {
+      "description": "Groups",
+      "fields": ["*"]
+    },
+    "Lists/SPFTSheetsTimeEntries": {
+      "description": "Entries",
+      "fields": ["*"]
+    },
+    "Lists/SPFTSheetsSettings": {
+      "description": "Settings",
+      "fields": ["*"]
+    }
+  }
+}

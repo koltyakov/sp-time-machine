@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SharePoint synchronisation config.jsonc schema definition",
+  "definitions": {
+    "coreProperties": {
+      "type": "object",
+      "description": "SharePoint synchronisation configuration",
+      "required": ["provider", "lists"],
+      "properties": {
+        "state": {
+          "description": "State persistence provider",
+          "type": "string",
+          "enum": ["file", "tables"],
+          "default": "file"
+        },
+        "lists": {
+          "description": "Lists configuration",
+          "type": "object",
+          "additionalProperties": {
+            "description": "List configuration",
+            "type": "object",
+            "$ref": "#/definitions/listProps"
+          }
+        }
+      }
+    },
+    "listProps": {
+      "type": "object",
+      "required": ["fields"],
+      "properties": {
+        "description": {
+          "description": "Human readable description or comment",
+          "type": "string"
+        },
+        "fields": {
+          "description": "SharePoint OData Fields",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disable": {
+          "description": "List synchronisation toggle switch",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "allOf": [{ "$ref": "#/definitions/coreProperties" }]
+}
