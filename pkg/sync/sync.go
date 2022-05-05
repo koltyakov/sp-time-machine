@@ -1,6 +1,8 @@
 package sync
 
 import (
+	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -45,6 +47,39 @@ func Sync(sp1, sp2 *api.SP, listUri string, since time.Time, syncState state.Sta
 	if err := ensureTargetList(sp2, d.Data().Title, listUri); err != nil {
 		return err
 	}
+
+	paged, err := list.Items().Top(100).GetPaged()
+	if err != nil {
+		return err
+	}
+
+	getAllItems(paged, func(items []api.ItemResp) error {
+		l := sp2.Web().GetList(listUri)
+		for _, item := range items {
+			i, err := l.Items().Filter(fmt.Sprintf("Title eq %d", item.Data().ID)).Select("Id").Get()
+			if err != nil {
+				return err
+			}
+			payload := map[string]string{
+				"Title": fmt.Sprintf("%d", item.Data().ID),
+				"Data":  string(item),
+			}
+			body, err := json.Marshal(payload)
+			if err != nil {
+				return err
+			}
+			if len(i.Data()) == 0 {
+				if _, err := l.Items().Add(body); err != nil {
+					return err
+				}
+			} else {
+				if _, err := l.Items().GetByID(i.Data()[0].Data().ID).Update(body); err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
 
 	// // Fetch and process all available items for list within the range,
 	// // run data write to target and UI feedback in the callback
@@ -100,13 +135,25 @@ func ensureTargetList(sp *api.SP, title, listUri string) error {
 	}
 	list := sp.Web().GetList(listUri)
 	// Provision fields
-	f1 := `<Field Type="Text" Name="SrcID" DisplayName="Source Item ID" MaxLength="255" />`
-	if _, err := list.Fields().CreateFieldAsXML(f1, 12); err != nil {
-		return err
-	}
+	// f1 := `<Field Type="Text" Name="SrcID" DisplayName="Source Item ID" MaxLength="255" />`
+	// if _, err := list.Fields().CreateFieldAsXML(f1, 12); err != nil {
+	// 	return err
+	// }
 	f2 := `<Field Type="Note" Name="Data" DisplayName="Item Data" NumLines="6" RichText="FALSE" RichTextMode="Compatible" />`
 	if _, err := list.Fields().CreateFieldAsXML(f2, 12); err != nil {
 		return err
 	}
 	return nil
+}
+
+func getAllItems(paged *api.ItemsPage, onPageCollection func(items []api.ItemResp) error) error {
+	onPageCollection(paged.Items.Data())
+	if !paged.HasNextPage() {
+		return nil
+	}
+	next, err := paged.GetNextPage()
+	if err != nil {
+		return nil
+	}
+	return getAllItems(next, onPageCollection)
 }

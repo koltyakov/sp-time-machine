@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/koltyakov/gosip/api"
 	"github.com/koltyakov/sp-time-machine/pkg/config"
 	"github.com/koltyakov/sp-time-machine/pkg/sp"
 	w "github.com/koltyakov/sp-time-machine/pkg/sync"
@@ -65,11 +66,13 @@ func syncJob(fullSync bool) error {
 	if _, err := sp1.ContextInfo(); err != nil {
 		return fmt.Errorf("error connecting to source SharePoint site: %s", err)
 	}
+	sp1 = sp1.Conf(api.HeadersPresets.Nometadata)
 
 	sp2, err := sp.NewSP(os.Getenv("SP_TARGET_CREDS"), os.Getenv("SP_MASTER_KEY"))
 	if _, err := sp2.ContextInfo(); err != nil {
 		return fmt.Errorf("error connecting to source SharePoint site: %s", err)
 	}
+	sp2 = sp2.Conf(api.HeadersPresets.Nometadata)
 
 	// Process incremental sync sequentially to keep predictable load during the day
 	if !fullSync {
