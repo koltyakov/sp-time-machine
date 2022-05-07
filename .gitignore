@@ -25,3 +25,6 @@ local.settings.json
 .DS_Store
 .env
 .idea
+
+# Sync job config
+config.jsonc

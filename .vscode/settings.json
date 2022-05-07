@@ -3,7 +3,7 @@
   "azureFunctions.projectLanguage": "Custom",
   "azureFunctions.projectRuntime": "~4",
   "debug.internalConsoleOptions": "neverOpen",
-  "files.exclude": {
+  "_files.exclude": {
     "**/.idea": true,
     "**/.terraform": true,
     "**/.terraform.tfstate.lock.info": true,

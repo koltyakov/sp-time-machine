@@ -26,18 +26,30 @@
     },
     "listProps": {
       "type": "object",
-      "required": ["fields"],
+      "required": [],
       "properties": {
         "description": {
           "description": "Human readable description or comment",
           "type": "string"
         },
-        "fields": {
-          "description": "SharePoint OData Fields",
+        "select": {
+          "description": "SharePoint OData select fields",
           "type": "array",
           "items": {
             "type": "string"
           }
+        },
+        "expand": {
+          "description": "SharePoint OData expand props",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "top": {
+          "description": "SharePoint OData list API query top limit",
+          "type": "integer",
+          "default": 1000
         },
         "disable": {
           "description": "List synchronisation toggle switch",

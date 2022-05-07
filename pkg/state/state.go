@@ -9,36 +9,32 @@ import (
 	"time"
 
 	"github.com/koltyakov/sp-time-machine/pkg/config"
+	"github.com/koltyakov/spsync"
 
 	"github.com/araddon/dateparse"
 )
 
 var defaultLastRun = time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)
 
-// SyncState struct
-type SyncState struct {
-	Lists map[string]*ListState `json:"lists"`
+// Grid struct
+type Grid struct {
+	Lists map[string]*List `json:"lists"`
 }
 
-// ListState struct
-type ListState struct {
-	LastRun         time.Time  `json:"lastRun"`
-	FullSync        time.Time  `json:"fullSync"`
-	FullSyncSession *time.Time `json:"fullSyncSession,omitempty"`
-	MD5             string     `json:"md5"`
+// List struct
+type List struct {
+	*spsync.State
+
+	Lock *time.Time `json:"sessionLock,omitempty"`
+	MD5  string     `json:"md5"`
 }
 
 // State interface
 type State interface {
-	Get() *SyncState
-	GetList(listUri string) *ListState
-	Save(state *SyncState) error
-	SaveList(listUri string, listState *ListState) error
-}
-
-// IsFullSync ...
-func IsFullSync(since time.Time) bool {
-	return since == DefaultStartDate()
+	Get() *Grid
+	GetList(listUri string) *List
+	Save(state *Grid) error
+	SaveList(listUri string, listState *List) error
 }
 
 // DefaultStartDate ...
@@ -57,7 +53,8 @@ func CheckSum(listName string) string {
 		return ""
 	}
 	m := map[string]interface{}{}
-	m["fields"] = e.Fields
+	m["select"] = e.Select
+	m["expand"] = e.Expand
 	bytes, err := json.Marshal(m)
 	if err != nil {
 		return ""
@@ -67,7 +64,7 @@ func CheckSum(listName string) string {
 }
 
 // ListStateToMap ...
-func ListStateToMap(s *ListState) map[string]interface{} {
+func ListStateToMap(s *List) map[string]interface{} {
 	m := map[string]interface{}{}
 	b, _ := json.Marshal(s)
 	_ = json.Unmarshal(b, &m)
@@ -75,15 +72,15 @@ func ListStateToMap(s *ListState) map[string]interface{} {
 }
 
 // ListStateFromMap ...
-func ListStateFromMap(m map[string]interface{}) *ListState {
-	s := &ListState{}
+func ListStateFromMap(m map[string]interface{}) *List {
+	s := &List{}
 	b, _ := json.Marshal(m)
 	_ = json.Unmarshal(b, &s)
 	return s
 }
 
 // Lists gets sync entities slice
-func Lists(s *SyncState) []string {
+func Lists(s *Grid) []string {
 	lists := []string{}
 	for key := range s.Lists {
 		lists = append(lists, key)

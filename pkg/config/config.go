@@ -17,11 +17,13 @@ type Settings struct {
 
 type List struct {
 	Description string   `json:"description"`
-	Fields      []string `json:"fields"`
+	Select      []string `json:"select"`
+	Expand      []string `json:"expand"`
+	Top         int      `json:"top"`
 	Disable     bool     `json:"disable"`
 }
 
-// GetSettings ...
+// GetSettings returns settings object
 func GetSettings() *Settings {
 	settings := &Settings{}
 

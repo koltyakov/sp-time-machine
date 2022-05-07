@@ -1,0 +1,24 @@
+{
+  "$schema": "./pkg/config/schema.json",
+  "provider": "tables",
+  "state": "tables",
+  "lists": {
+    "Lists/SPFTSheetsJobs": {
+      "description": "Jobs Dictionary",
+      "select": ["*"]
+    },
+    "Lists/SPFTSheetsGroups": {
+      "description": "Groups Dictionary",
+      "select": ["*"]
+    },
+    "Lists/SPFTSheetsTimeEntries": {
+      "description": "Timesheets Entries",
+      "select": ["*"],
+      "disable": true
+    },
+    "Lists/SPFTSheetsSettings": {
+      "description": "Timesheets Settings",
+      "select": ["*"]
+    }
+  }
+}

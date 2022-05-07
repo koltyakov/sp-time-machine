@@ -12,7 +12,7 @@ var stateFile = "state.json"
 
 // LocalState struct
 type LocalState struct {
-	*state.SyncState
+	*state.Grid
 }
 
 // NewState local state constructor
@@ -22,41 +22,41 @@ func NewState() (state.State, error) {
 	if err != nil {
 		return nil, err
 	}
-	ls.SyncState = s
+	ls.Grid = s
 	return ls, nil
 }
 
 // Get gets state
-func (ls *LocalState) Get() *state.SyncState {
-	return ls.SyncState
+func (ls *LocalState) Get() *state.Grid {
+	return ls.Grid
 }
 
 // GetEnt gets entity state
-func (ls *LocalState) GetList(listUri string) *state.ListState {
+func (ls *LocalState) GetList(listUri string) *state.List {
 	return ls.Lists[listUri]
 }
 
 // Save saves state
-func (ls *LocalState) Save(s *state.SyncState) error {
+func (ls *LocalState) Save(s *state.Grid) error {
 	file, _ := json.MarshalIndent(s, "", "  ")
 	return ioutil.WriteFile(stateFile, file, 0644)
 }
 
 // SaveEnt saves entity state
-func (ls *LocalState) SaveList(listUri string, entityState *state.ListState) error {
+func (ls *LocalState) SaveList(listUri string, entityState *state.List) error {
 	ls.Lists[listUri] = entityState
-	return ls.Save(ls.SyncState)
+	return ls.Save(ls.Grid)
 }
 
 // reads state from storage
-func (ls *LocalState) read() (*state.SyncState, error) {
-	s := &state.SyncState{}
+func (ls *LocalState) read() (*state.Grid, error) {
+	s := &state.Grid{}
 
 	bdat, _ := ioutil.ReadFile(stateFile)
 	_ = json.Unmarshal(bdat, s)
 
 	if s.Lists == nil {
-		s.Lists = map[string]*state.ListState{}
+		s.Lists = map[string]*state.List{}
 	}
 
 	for key, ent := range config.GetSettings().Lists {
@@ -65,13 +65,10 @@ func (ls *LocalState) read() (*state.SyncState, error) {
 		}
 		entity, ok := s.Lists[key]
 		if !ok {
-			entity = &state.ListState{}
+			entity = &state.List{}
 		}
-		if entity.LastRun.IsZero() {
-			entity.LastRun = state.DefaultStartDate()
-		}
-		if entity.FullSync.IsZero() {
-			entity.FullSync = state.DefaultStartDate()
+		if entity.SyncDate.IsZero() {
+			entity.SyncDate = state.DefaultStartDate()
 		}
 		s.Lists[key] = entity
 	}

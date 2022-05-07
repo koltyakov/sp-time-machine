@@ -18,7 +18,7 @@ var (
 
 // TablesState struct
 type TablesState struct {
-	*state.SyncState
+	*state.Grid
 	connectionString string
 }
 
@@ -31,22 +31,22 @@ func NewState(connectionString string) (state.State, error) {
 	if err != nil {
 		return nil, err
 	}
-	ls.SyncState = s
+	ls.Grid = s
 	return ls, nil
 }
 
 // Get gets state
-func (t *TablesState) Get() *state.SyncState {
-	return t.SyncState
+func (t *TablesState) Get() *state.Grid {
+	return t.Grid
 }
 
 // GetEnt gets entity state
-func (t *TablesState) GetList(listUri string) *state.ListState {
+func (t *TablesState) GetList(listUri string) *state.List {
 	return t.Lists[listUri]
 }
 
 // Save saves state
-func (t *TablesState) Save(s *state.SyncState) error {
+func (t *TablesState) Save(s *state.Grid) error {
 	client, err := t.getClient()
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (t *TablesState) Save(s *state.SyncState) error {
 }
 
 // SaveEnt saves entity state
-func (t *TablesState) SaveList(listUri string, entityState *state.ListState) error {
+func (t *TablesState) SaveList(listUri string, entityState *state.List) error {
 	t.Lists[listUri] = entityState
 
 	client, err := t.getClient()
@@ -89,9 +89,9 @@ func (t *TablesState) SaveList(listUri string, entityState *state.ListState) err
 }
 
 // reads state from storage
-func (t *TablesState) read() (*state.SyncState, error) {
-	s := &state.SyncState{
-		Lists: map[string]*state.ListState{},
+func (t *TablesState) read() (*state.Grid, error) {
+	s := &state.Grid{
+		Lists: map[string]*state.List{},
 	}
 
 	client, err := t.getClient()
@@ -121,13 +121,10 @@ func (t *TablesState) read() (*state.SyncState, error) {
 		}
 		entity, ok := s.Lists[key]
 		if !ok {
-			entity = &state.ListState{}
+			entity = &state.List{}
 		}
-		if entity.LastRun.IsZero() {
-			entity.LastRun = state.DefaultStartDate()
-		}
-		if entity.FullSync.IsZero() {
-			entity.FullSync = state.DefaultStartDate()
+		if entity.SyncDate.IsZero() {
+			entity.SyncDate = state.DefaultStartDate()
 		}
 		s.Lists[key] = entity
 	}
