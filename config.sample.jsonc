@@ -5,20 +5,20 @@
   "lists": {
     "Lists/SPFTSheetsJobs": {
       "description": "Jobs Dictionary",
-      "select": ["*"]
+      "select": ["Title"]
     },
     "Lists/SPFTSheetsGroups": {
       "description": "Groups Dictionary",
-      "select": ["*"]
+      "select": ["Title"]
     },
     "Lists/SPFTSheetsTimeEntries": {
       "description": "Timesheets Entries",
-      "select": ["*"],
+      "select": ["Title"],
       "disable": true
     },
     "Lists/SPFTSheetsSettings": {
       "description": "Timesheets Settings",
-      "select": ["*"]
+      "select": ["Title"]
     }
   }
 }

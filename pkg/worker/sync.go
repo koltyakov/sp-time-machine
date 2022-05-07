@@ -1,9 +1,5 @@
 package worker
 
-import "github.com/koltyakov/spsync"
-
-var Run = spsync.Run
-
 // import (
 // 	"encoding/json"
 // 	"fmt"

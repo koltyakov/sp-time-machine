@@ -6,6 +6,7 @@ import (
 
 	"github.com/koltyakov/sp-time-machine/pkg/config"
 	"github.com/koltyakov/sp-time-machine/pkg/state"
+	"github.com/koltyakov/spsync"
 )
 
 var stateFile = "state.json"
@@ -65,7 +66,11 @@ func (ls *LocalState) read() (*state.Grid, error) {
 		}
 		entity, ok := s.Lists[key]
 		if !ok {
-			entity = &state.List{}
+			entity = &state.List{
+				EntID:    key,
+				SyncMode: spsync.Full,
+				SyncDate: state.DefaultStartDate(),
+			}
 		}
 		if entity.SyncDate.IsZero() {
 			entity.SyncDate = state.DefaultStartDate()

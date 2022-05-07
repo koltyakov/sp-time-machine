@@ -23,7 +23,13 @@ type Grid struct {
 
 // List struct
 type List struct {
-	*spsync.State
+	EntID       string      `json:"entId"`
+	SyncMode    spsync.Mode `json:"syncMode"`
+	SyncDate    time.Time   `json:"syncDate"`
+	SyncStage   string      `json:"syncStage"`
+	ChangeToken string      `json:"changeToken"`
+	PageToken   string      `json:"pageToken"`
+	Fails       int         `json:"fails"`
 
 	Lock *time.Time `json:"sessionLock,omitempty"`
 	MD5  string     `json:"md5"`
