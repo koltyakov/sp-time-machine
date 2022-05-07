@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-sdk-for-go v63.4.0+incompatible
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/howeyc/gopass v0.0.0-20210920133722-c8aef6fb66ef
-	github.com/koltyakov/gosip v0.0.0-20220409101717-a06f35e30d81
+	github.com/koltyakov/gosip v0.0.0-20220507143847-da902203ed66
 	github.com/mattn/go-colorable v0.1.12
 	github.com/sirupsen/logrus v1.8.1
 	github.com/snowzach/rotatefilehook v0.0.0-20220211133110-53752135082d
@@ -29,7 +29,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
-	github.com/koltyakov/spsync v0.0.0-20220507172730-809ac41c5f38 // indirect
+	github.com/koltyakov/spsync v0.0.0-20220507193015-080ec6972c11 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect

@@ -28,3 +28,4 @@ local.settings.json
 
 # Sync job config
 config.jsonc
+state.json

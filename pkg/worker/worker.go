@@ -9,6 +9,7 @@ import (
 	"github.com/koltyakov/gosip"
 	"github.com/koltyakov/gosip/api"
 	"github.com/koltyakov/sp-time-machine/pkg/config"
+	"github.com/koltyakov/sp-time-machine/pkg/state"
 	"github.com/koltyakov/spsync"
 
 	strategy "github.com/koltyakov/gosip/auth/saml"
@@ -29,14 +30,20 @@ func Run() error {
 
 	sp, err := getSourceSP()
 	if err != nil {
-		return fmt.Errorf("can't initiate source SP: %s", err)
+		return fmt.Errorf("can't initiate SharePoint source: %s", err)
+	}
+
+	if _, err := sp.ContextInfo(); err != nil {
+		return fmt.Errorf("can't connect to SharePoint: %s", err)
 	}
 
 	for _, listName := range settings.ActiveLists() {
 		start := time.Now()
 
+		// ToDo: Use entities locks
+
 		s := syncState.GetList(listName)
-		state := &spsync.State{
+		entState := &spsync.State{
 			EntID:       listName,
 			SyncMode:    s.SyncMode,
 			SyncDate:    s.SyncDate,
@@ -55,7 +62,7 @@ func Run() error {
 
 		options := &spsync.Options{
 			SP:      sp,
-			State:   state,
+			State:   entState,
 			EntConf: entConf,
 			Upsert: func(ctx context.Context, items []spsync.ListItem) error {
 				for _, item := range items {
@@ -69,11 +76,22 @@ func Run() error {
 			},
 		}
 
-		// newState
-		_, err := spsync.Run(ctx, options)
+		n, err := spsync.Run(ctx, options)
 		if err != nil {
+			// ToDo: Save state	on error too
 			return fmt.Errorf("error syncing \"%s\": %s", listName, err)
 		}
+
+		syncState.SaveList(listName, &state.List{
+			EntID:       listName,
+			SyncMode:    n.SyncMode,
+			SyncDate:    n.SyncDate,
+			SyncStage:   n.SyncStage,
+			ChangeToken: n.ChangeToken,
+			PageToken:   n.PageToken,
+			Fails:       n.Fails,
+			MD5:         s.MD5,
+		})
 
 		log.Infof("List \"%s\" sync completed in %f s", listName, time.Since(start).Seconds())
 	}
