@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/koltyakov/sp-time-machine/pkg/providers"
 	"github.com/koltyakov/sp-time-machine/pkg/utils"
@@ -28,7 +29,7 @@ func NewClient(folderPath string) providers.Provider {
 
 // SyncItems runs entity items batch sync
 func (c *Client) SyncItems(ctx context.Context, entity string, items []spsync.Item) error {
-	csvFilePath := path.Join(c.folderPath, entity+".csv")
+	csvFilePath := c.getFilePath(entity)
 
 	data := [][]string{}
 
@@ -66,7 +67,7 @@ func (c *Client) DropByIDs(ctx context.Context, entity string, ids []int) error 
 		return nil
 	}
 
-	csvFilePath := path.Join(c.folderPath, entity+".csv")
+	csvFilePath := c.getFilePath(entity)
 	if _, err := os.Stat(csvFilePath); os.IsNotExist(err) {
 		return nil
 	}
@@ -106,7 +107,7 @@ func (c *Client) DropByIDs(ctx context.Context, entity string, ids []int) error 
 
 // EnsureEntity ensures entity sync table
 func (c *Client) EnsureEntity(ctx context.Context, entity string) error {
-	csvFilePath := path.Join(c.folderPath, entity+".csv")
+	csvFilePath := c.getFilePath(entity)
 
 	headers := []string{"id", "modified", "data"}
 
@@ -130,4 +131,10 @@ func (c *Client) EnsureEntity(ctx context.Context, entity string) error {
 	}
 
 	return nil
+}
+
+func (c *Client) getFilePath(entity string) string {
+	fileName := strings.Replace(entity, "/", "_", -1)
+	csvFilePath := path.Join(c.folderPath, fileName+".csv")
+	return csvFilePath
 }

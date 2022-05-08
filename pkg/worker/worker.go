@@ -64,6 +64,16 @@ func Run() error {
 			Ent:   entConf,
 			Upsert: func(ctx context.Context, items []spsync.Item) error {
 				fmt.Printf("Upserts %s: %d\n", listName, len(items))
+				for i := range items {
+					if _, ok := items[i].Data["Author"]; ok {
+						items[i].Data["Author"] = items[i].Data["Author"].(map[string]interface{})["Title"]
+						delete(items[i].Data, "Author@odata.navigationLinkUrl")
+					}
+					if _, ok := items[i].Data["Editor"]; ok {
+						items[i].Data["Editor"] = items[i].Data["Editor"].(map[string]interface{})["Title"]
+						delete(items[i].Data, "Editor@odata.navigationLinkUrl")
+					}
+				}
 				_ = client.SyncItems(ctx, listName, items)
 				return nil
 			},
