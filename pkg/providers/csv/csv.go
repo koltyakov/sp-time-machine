@@ -38,6 +38,7 @@ func (c *Client) SyncItems(ctx context.Context, entity string, items []spsync.It
 		jsonBytes, _ := json.Marshal(item.Data)
 		data = append(data, []string{
 			fmt.Sprintf("%d", item.ID),
+			item.Created.UTC().Format("2006-01-02T15:04:05.000Z"),
 			item.Modified.UTC().Format("2006-01-02T15:04:05.000Z"),
 			string(jsonBytes),
 		})
@@ -109,7 +110,7 @@ func (c *Client) DropByIDs(ctx context.Context, entity string, ids []int) error 
 func (c *Client) EnsureEntity(ctx context.Context, entity string) error {
 	csvFilePath := c.getFilePath(entity)
 
-	headers := []string{"id", "modified", "data"}
+	headers := []string{"id", "created", "modified", "data"}
 
 	if _, err := os.Stat(c.folderPath); os.IsNotExist(err) {
 		os.MkdirAll(c.folderPath, 0700)

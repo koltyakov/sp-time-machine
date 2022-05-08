@@ -65,6 +65,9 @@ func Run() error {
 			Upsert: func(ctx context.Context, items []spsync.Item) error {
 				fmt.Printf("Upserts %s: %d\n", listName, len(items))
 				for i := range items {
+					delete(items[i].Data, "Id")
+					delete(items[i].Data, "Created")
+					delete(items[i].Data, "Modified")
 					if _, ok := items[i].Data["Author"]; ok {
 						items[i].Data["Author"] = items[i].Data["Author"].(map[string]interface{})["Title"]
 						delete(items[i].Data, "Author@odata.navigationLinkUrl")
