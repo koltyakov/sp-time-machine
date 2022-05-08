@@ -42,56 +42,65 @@ func Run() error {
 
 		// ToDo: Use entities locks
 
-		s := syncState.GetList(listName)
-		entState := &spsync.State{
-			EntID:       listName,
-			SyncMode:    s.SyncMode,
-			SyncDate:    s.SyncDate,
-			SyncStage:   s.SyncStage,
-			ChangeToken: s.ChangeToken,
-			PageToken:   s.PageToken,
-			Fails:       s.Fails,
-		}
+		entState := mapListState(listName, syncState.GetList(listName))
+		entMD5 := state.CheckSum(listName)
 
 		e := settings.Lists[listName]
-		entConf := &spsync.EntConf{
+		entConf := &spsync.Ent{
 			Select: e.Select,
 			Expand: e.Expand,
 			Top:    e.Top,
 		}
 
 		options := &spsync.Options{
-			SP:      sp,
-			State:   entState,
-			EntConf: entConf,
-			Upsert: func(ctx context.Context, items []spsync.ListItem) error {
-				for _, item := range items {
-					fmt.Printf("Upsert %s: %+v\n", listName, item.Data)
-				}
+			SP:    sp,
+			State: entState,
+			Ent:   entConf,
+			Upsert: func(ctx context.Context, items []spsync.Item) error {
+				fmt.Printf("Upserts %s: %d\n", listName, len(items))
 				return nil
 			},
 			Delete: func(ctx context.Context, ids []int) error {
-				fmt.Printf("Deletes %s: %+v\n", listName, ids)
+				fmt.Printf("Deletes %s: %d\n", listName, len(ids))
 				return nil
+			},
+			Persist: func(s *spsync.State) {
+				if err := syncState.SaveList(listName, mapSyncState(listName, s, entMD5)); err != nil {
+					log.Errorf("Can't persist state for List \"%s\": %s", listName, err)
+				}
+			},
+			Events: &spsync.Events{
+				FullSyncStarted: func(entity string, isBlank bool) {
+					if isBlank {
+						log.Infof("Full sync started for List \"%s\"", entity)
+					} else {
+						log.Infof("Full sync continued for List \"%s\"", entity)
+					}
+				},
+				FullSyncFinished: func(entity string, isBlank bool) {
+					log.Infof("Full sync finished for List \"%s\"", entity)
+				},
+				IncrSyncStarted: func(entity string) {
+					log.Infof("Incr sync started for List \"%s\"", entity)
+				},
+				IncrSyncFinished: func(entity string) {
+					log.Infof("Incr sync finished for List \"%s\"", entity)
+				},
 			},
 		}
 
 		n, err := spsync.Run(ctx, options)
 		if err != nil {
-			// ToDo: Save state	on error too
+			n.Fails += 1
+			if err := syncState.SaveList(listName, mapSyncState(listName, n, entMD5)); err != nil {
+				log.Errorf("Can't persist state for List \"%s\": %s", listName, err)
+			}
 			return fmt.Errorf("error syncing \"%s\": %s", listName, err)
 		}
 
-		syncState.SaveList(listName, &state.List{
-			EntID:       listName,
-			SyncMode:    n.SyncMode,
-			SyncDate:    n.SyncDate,
-			SyncStage:   n.SyncStage,
-			ChangeToken: n.ChangeToken,
-			PageToken:   n.PageToken,
-			Fails:       n.Fails,
-			MD5:         s.MD5,
-		})
+		if err := syncState.SaveList(listName, mapSyncState(listName, n, entMD5)); err != nil {
+			log.Errorf("Can't persist state for List \"%s\": %s", listName, err)
+		}
 
 		log.Infof("List \"%s\" sync completed in %f s", listName, time.Since(start).Seconds())
 	}
@@ -99,6 +108,42 @@ func Run() error {
 	log.Infof("Sync session completed in %f s", time.Since(startDate).Seconds())
 
 	return nil
+}
+
+func mapListState(listName string, s *state.List) *spsync.State {
+	syncState := &spsync.State{
+		EntID:       listName,
+		SyncMode:    s.SyncMode,
+		SyncDate:    s.SyncDate,
+		SyncStage:   s.SyncStage,
+		ChangeToken: s.ChangeToken,
+		PageToken:   s.PageToken,
+		Fails:       s.Fails,
+	}
+
+	hash := state.CheckSum(listName)
+	if hash != s.MD5 {
+		// Sync profile changes detected which needs full sync downgrade
+		syncState.SyncMode = spsync.Full
+		syncState.SyncStage = ""
+		syncState.ChangeToken = ""
+		syncState.PageToken = ""
+	}
+
+	return syncState
+}
+
+func mapSyncState(listName string, s *spsync.State, hash string) *state.List {
+	return &state.List{
+		EntID:       listName,
+		SyncMode:    s.SyncMode,
+		SyncDate:    s.SyncDate,
+		SyncStage:   s.SyncStage,
+		ChangeToken: s.ChangeToken,
+		PageToken:   s.PageToken,
+		Fails:       s.Fails,
+		MD5:         hash,
+	}
 }
 
 func getSourceSP() (*api.SP, error) {

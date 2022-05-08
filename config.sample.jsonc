@@ -5,20 +5,21 @@
   "lists": {
     "Lists/SPFTSheetsJobs": {
       "description": "Jobs Dictionary",
-      "select": ["Title"]
+      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"]
     },
-    "Lists/SPFTSheetsGroups": {
-      "description": "Groups Dictionary",
-      "select": ["Title"]
+    "Lists/SPFTSheetsJobs1": {
+      "description": "Jobs Types Dictionary",
+      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"]
     },
     "Lists/SPFTSheetsTimeEntries": {
       "description": "Timesheets Entries",
-      "select": ["Title"],
-      "disable": true
+      "select": ["SPFTSheetsDate", "SPFTSheetsDuration", "SPFTSheetsJobId", "SPFTSheetsJob1Id", "Author/Title", "Editor/Title"],
+      "expand": ["Author", "Editor"],
+      "disable": false
     },
     "Lists/SPFTSheetsSettings": {
       "description": "Timesheets Settings",
-      "select": ["Title"]
+      "select": ["Title", "SPFTSheetsValue", "SPFTSheetsDomain"]
     }
   }
 }

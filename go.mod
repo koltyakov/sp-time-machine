@@ -29,7 +29,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
-	github.com/koltyakov/spsync v0.0.0-20220507193015-080ec6972c11 // indirect
+	github.com/koltyakov/spsync v0.0.0-20220508112537-87f09733c0ac // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect

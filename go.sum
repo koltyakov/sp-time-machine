@@ -54,6 +54,16 @@ github.com/koltyakov/spsync v0.0.0-20220507181923-2a7a5423c93b h1:Va9A/jpbcLnYzs
 github.com/koltyakov/spsync v0.0.0-20220507181923-2a7a5423c93b/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
 github.com/koltyakov/spsync v0.0.0-20220507193015-080ec6972c11 h1:u7VmsPyOJfNLfAPgSrs7jOi/33HgEQGFmZxDzi1Bp4w=
 github.com/koltyakov/spsync v0.0.0-20220507193015-080ec6972c11/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
+github.com/koltyakov/spsync v0.0.0-20220508102030-d4780b7ad02b h1:0jJ/s9rsR7ZpwqHZFRbXF491YCy64FXbF4ejow1xcqk=
+github.com/koltyakov/spsync v0.0.0-20220508102030-d4780b7ad02b/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
+github.com/koltyakov/spsync v0.0.0-20220508102805-3b719c6bd012 h1:zdtlREvqo7bE1Jc+tOMouqHAfqp/VQuYujuwnFttBzE=
+github.com/koltyakov/spsync v0.0.0-20220508102805-3b719c6bd012/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
+github.com/koltyakov/spsync v0.0.0-20220508104603-e535b0cea8ae h1:RE/UY2+c28W5TT+Y7x5SfwhtMSt9v9p/S9aBudnXoTE=
+github.com/koltyakov/spsync v0.0.0-20220508104603-e535b0cea8ae/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
+github.com/koltyakov/spsync v0.0.0-20220508105751-14ae52fb1b19 h1:PCRUymm0mXSQWKcm2NIDEfov/wKknCt+lzP5lkIV4E8=
+github.com/koltyakov/spsync v0.0.0-20220508105751-14ae52fb1b19/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
+github.com/koltyakov/spsync v0.0.0-20220508112537-87f09733c0ac h1:NdD9pIbtZEQYmQX/MHiPclm3vO6ba4Cj2O2sJLv7Nqk=
+github.com/koltyakov/spsync v0.0.0-20220508112537-87f09733c0ac/go.mod h1:eZzg/Mdf7n7NNTeI9p2YqhS/5tDU5QhU1FNJ92EklOc=
 github.com/kr/pretty v0.2.1 h1:Fmg33tUaq4/8ym9TJN1x7sLJnHVwhP33CNkpYV/7rwI=
 github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
