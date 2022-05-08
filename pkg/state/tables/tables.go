@@ -88,6 +88,18 @@ func (t *TablesState) SaveList(listUri string, entityState *state.List) error {
 	return entity.InsertOrReplace(nil)
 }
 
+// Lock locks entity sync for other clients
+func (t *TablesState) Lock(listUri string) error {
+	// ToDo: Implement entity sync locking
+	return nil
+}
+
+// Unlock unlocks entity sync for other clients
+func (t *TablesState) Unlock(listUri string) error {
+	// ToDo: Implement entity sync unlocking
+	return nil
+}
+
 // reads state from storage
 func (t *TablesState) read() (*state.Grid, error) {
 	s := &state.Grid{

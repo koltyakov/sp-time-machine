@@ -41,6 +41,8 @@ type State interface {
 	GetList(listUri string) *List
 	Save(state *Grid) error
 	SaveList(listUri string, listState *List) error
+	// Lock(listUri string) error
+	// Unlock(listUri string) error
 }
 
 // DefaultStartDate ...

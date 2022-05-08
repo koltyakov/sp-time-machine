@@ -2,7 +2,9 @@ package local
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"time"
 
 	"github.com/koltyakov/sp-time-machine/pkg/config"
 	"github.com/koltyakov/sp-time-machine/pkg/state"
@@ -47,6 +49,23 @@ func (ls *LocalState) Save(s *state.Grid) error {
 func (ls *LocalState) SaveList(listUri string, entityState *state.List) error {
 	ls.Lists[listUri] = entityState
 	return ls.Save(ls.Grid)
+}
+
+// Lock locks entity sync for other clients
+func (ls *LocalState) Lock(listUri string) error {
+	l := ls.GetList(listUri)
+	if l.Lock != nil {
+		return fmt.Errorf("can't lock entity %s as it's already locked since %s", listUri, l.Lock)
+	}
+	*l.Lock = time.Now()
+	return ls.SaveList(listUri, l)
+}
+
+// Unlock unlocks entity sync for other clients
+func (ls *LocalState) Unlock(listUri string) error {
+	l := ls.GetList(listUri)
+	l.Lock = nil
+	return ls.SaveList(listUri, l)
 }
 
 // reads state from storage

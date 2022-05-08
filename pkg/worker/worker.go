@@ -9,6 +9,7 @@ import (
 	"github.com/koltyakov/gosip"
 	"github.com/koltyakov/gosip/api"
 	"github.com/koltyakov/sp-time-machine/pkg/config"
+	provider "github.com/koltyakov/sp-time-machine/pkg/providers/csv"
 	"github.com/koltyakov/sp-time-machine/pkg/state"
 	"github.com/koltyakov/spsync"
 
@@ -40,7 +41,12 @@ func Run() error {
 	for _, listName := range settings.ActiveLists() {
 		start := time.Now()
 
-		// ToDo: Use entities locks
+		// if err := syncState.Lock(listName); err != nil {
+		// 	log.Warn(err)
+		// 	continue
+		// }
+
+		client := provider.NewClient("./data")
 
 		entState := mapListState(listName, syncState.GetList(listName))
 		entMD5 := state.CheckSum(listName)
@@ -58,10 +64,12 @@ func Run() error {
 			Ent:   entConf,
 			Upsert: func(ctx context.Context, items []spsync.Item) error {
 				fmt.Printf("Upserts %s: %d\n", listName, len(items))
+				_ = client.SyncItems(ctx, listName, items)
 				return nil
 			},
 			Delete: func(ctx context.Context, ids []int) error {
 				fmt.Printf("Deletes %s: %d\n", listName, len(ids))
+				_ = client.DropByIDs(ctx, listName, ids)
 				return nil
 			},
 			Persist: func(s *spsync.State) {
@@ -88,6 +96,8 @@ func Run() error {
 				},
 			},
 		}
+
+		_ = client.EnsureEntity(ctx, listName)
 
 		n, err := spsync.Run(ctx, options)
 		if err != nil {
