@@ -98,15 +98,15 @@ func Run() error {
 						log.Infof("Full sync continued for List \"%s\"", entity)
 					}
 				},
-				FullSyncFinished: func(entity string, isBlank bool) {
-					log.Infof("Full sync finished for List \"%s\"", entity)
-				},
+				// FullSyncFinished: func(entity string, isBlank bool) {
+				// 	log.Infof("Full sync finished for List \"%s\"", entity)
+				// },
 				IncrSyncStarted: func(entity string) {
 					log.Infof("Incr sync started for List \"%s\"", entity)
 				},
-				IncrSyncFinished: func(entity string) {
-					log.Infof("Incr sync finished for List \"%s\"", entity)
-				},
+				// IncrSyncFinished: func(entity string) {
+				// 	log.Infof("Incr sync finished for List \"%s\"", entity)
+				// },
 			},
 		}
 
