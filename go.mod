@@ -7,8 +7,8 @@ require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/howeyc/gopass v0.0.0-20210920133722-c8aef6fb66ef
 	github.com/joho/godotenv v1.4.0
-	github.com/koltyakov/gosip v0.0.0-20220528161350-eb02edba0cfd
-	github.com/koltyakov/spsync v0.0.0-20220530181159-1d0869be9bc4
+	github.com/koltyakov/gosip v0.0.0-20220530230914-6a68259e3060
+	github.com/koltyakov/spsync v0.0.0-20220530205852-4aa519de5ddb
 	github.com/mattn/go-colorable v0.1.12
 	github.com/sirupsen/logrus v1.8.1
 	github.com/snowzach/rotatefilehook v0.0.0-20220211133110-53752135082d

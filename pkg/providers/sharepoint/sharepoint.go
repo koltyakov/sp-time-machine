@@ -69,18 +69,25 @@ func (c *Client) SyncItems(ctx context.Context, entity string, items []spsync.It
 // DropByIDs drops items by IDs
 func (c *Client) DropByIDs(ctx context.Context, entity string, ids []int) error {
 	ent := c.sp.Web().GetList(entity).Items()
-	filterConds := []string{}
-	for _, id := range ids {
-		filterConds = append(filterConds, fmt.Sprintf("SourceID eq %d", id))
-	}
-	itemsToDelete, err := ent.Select("ID").Filter(strings.Join(filterConds, " or ")).Get()
-	if err != nil {
-		return err
-	}
+	limit := 10
 
-	for _, item := range itemsToDelete.Data() {
-		if err := ent.GetByID(item.Data().ID).Delete(); err != nil {
+	for i := 0; i < len(ids); i += limit {
+		batch := ids[i:min(i+limit, len(ids))]
+
+		filterConds := []string{}
+		for _, id := range batch {
+			filterConds = append(filterConds, fmt.Sprintf("SourceID eq %d", id))
+		}
+
+		itemsToDelete, err := ent.Select("ID").Filter(strings.Join(filterConds, " or ")).Get()
+		if err != nil {
 			return err
+		}
+
+		for _, item := range itemsToDelete.Data() {
+			if err := ent.GetByID(item.Data().ID).Delete(); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -151,10 +158,9 @@ func (c *Client) mapPayload(entity string, item spsync.Item) (map[string]string,
 		delete(item.Data, "Editor")
 	}
 
-	// M/D/YYYY h:m A
 	// https://gosamples.dev/date-time-format-cheatsheet/
-	payload["Created"] = item.Created.Format("01/02/2006 3:04 PM")
-	payload["Modified"] = item.Modified.Format("01/02/2006 3:04 PM")
+	payload["Created"] = item.Created.Format("02.01.2006")
+	payload["Modified"] = item.Modified.Format("02.01.2006")
 
 	delete(item.Data, "FileDirRef")
 
@@ -200,9 +206,16 @@ func (c *Client) mapPayload(entity string, item spsync.Item) (map[string]string,
 		if item.Data["SPFTSheetsJob1Id"] != nil {
 			payload["SPFTSheetsJob1"] = typesMap[fmt.Sprintf("%d", int(item.Data["SPFTSheetsJob1Id"].(float64)))]
 		}
-		payload["SPFTSheetsDate"] = item.Modified.Format("01/02/2006 3:04 PM")
+		payload["SPFTSheetsDate"] = item.Modified.Format("02.01.2006")
 		payload["SPFTSheetsDuration"] = fmt.Sprintf("%d", int(item.Data["SPFTSheetsDuration"].(float64)))
 	}
 
 	return payload, folder
+}
+
+func min(a, b int) int {
+	if a <= b {
+		return a
+	}
+	return b
 }

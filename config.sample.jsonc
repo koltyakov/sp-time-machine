@@ -15,7 +15,7 @@
     },
     "Lists/SPFTSheetsTimeEntries": {
       "description": "Timesheets Entries",
-      "select": ["SPFTSheetsDate", "SPFTSheetsDuration", "SPFTSheetsJobId", "SPFTSheetsJob1Id", "Author/Title", "Editor/Title"],
+      "select": ["SPFTSheetsDate", "SPFTSheetsDuration", "SPFTSheetsNotes", "SPFTSheetsJobId", "SPFTSheetsJob1Id", "Author/Title", "Editor/Title"],
       "expand": ["Author", "Editor"],
       "top": 100,
       "disable": false
