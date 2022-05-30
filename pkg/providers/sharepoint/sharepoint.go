@@ -45,6 +45,7 @@ func (c *Client) SyncItems(ctx context.Context, entity string, items []spsync.It
 				DecodedPath:       folder,
 			})
 			if err != nil {
+				fmt.Printf("Item: %+v\n", metadata)
 				return err
 			}
 			continue
@@ -55,6 +56,7 @@ func (c *Client) SyncItems(ctx context.Context, entity string, items []spsync.It
 				NewDocumentUpdate: true,
 			})
 			if err != nil {
+				fmt.Printf("Item: %+v\n", metadata)
 				return err
 			}
 			continue
