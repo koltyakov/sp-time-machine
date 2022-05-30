@@ -1,25 +1,24 @@
 {
   "$schema": "./pkg/config/schema.json",
-  "provider": "tables",
-  "state": "tables",
+  "provider": "sharepoint",
+  "state": "file",
   "lists": {
     "Lists/SPFTSheetsJobs": {
       "description": "Jobs Dictionary",
-      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"]
+      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"],
+      "top": 100
     },
     "Lists/SPFTSheetsJobs1": {
       "description": "Jobs Types Dictionary",
-      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"]
+      "select": ["Title", "SPFTSheetsDescription", "SPFTSheetsDisabled", "FileDirRef"],
+      "top": 100
     },
     "Lists/SPFTSheetsTimeEntries": {
       "description": "Timesheets Entries",
       "select": ["SPFTSheetsDate", "SPFTSheetsDuration", "SPFTSheetsJobId", "SPFTSheetsJob1Id", "Author/Title", "Editor/Title"],
       "expand": ["Author", "Editor"],
+      "top": 100,
       "disable": false
-    },
-    "Lists/SPFTSheetsSettings": {
-      "description": "Timesheets Settings",
-      "select": ["Title", "SPFTSheetsValue", "SPFTSheetsDomain"]
     }
   }
 }

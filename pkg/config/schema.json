@@ -10,7 +10,7 @@
         "state": {
           "description": "State persistence provider",
           "type": "string",
-          "enum": ["file", "tables"],
+          "enum": ["file", "tables", "sharepoint"],
           "default": "file"
         },
         "lists": {

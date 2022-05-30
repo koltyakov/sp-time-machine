@@ -25,6 +25,7 @@ local.settings.json
 .DS_Store
 .env
 .idea
+.vscode/*.log
 
 # Sync job config
 config.jsonc

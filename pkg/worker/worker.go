@@ -9,7 +9,9 @@ import (
 	"github.com/koltyakov/gosip"
 	"github.com/koltyakov/gosip/api"
 	"github.com/koltyakov/sp-time-machine/pkg/config"
-	provider "github.com/koltyakov/sp-time-machine/pkg/providers/csv"
+
+	// provider "github.com/koltyakov/sp-time-machine/pkg/providers/csv"
+	provider "github.com/koltyakov/sp-time-machine/pkg/providers/sharepoint"
 	"github.com/koltyakov/sp-time-machine/pkg/state"
 	"github.com/koltyakov/spsync"
 
@@ -38,6 +40,14 @@ func Run() error {
 		return fmt.Errorf("can't connect to SharePoint: %s", err)
 	}
 
+	// client := provider.NewClient("./data")
+
+	target, err := getTargetSP()
+	if err != nil {
+		return fmt.Errorf("can't initiate SharePoint target: %s", err)
+	}
+	client := provider.NewClient(target)
+
 	for _, listName := range settings.ActiveLists() {
 		start := time.Now()
 
@@ -45,8 +55,6 @@ func Run() error {
 		// 	log.Warn(err)
 		// 	continue
 		// }
-
-		client := provider.NewClient("./data")
 
 		entState := mapListState(listName, syncState.GetList(listName))
 		entMD5 := state.CheckSum(listName)
@@ -77,13 +85,11 @@ func Run() error {
 						delete(items[i].Data, "Editor@odata.navigationLinkUrl")
 					}
 				}
-				_ = client.SyncItems(ctx, listName, items)
-				return nil
+				return client.SyncItems(ctx, listName, items)
 			},
 			Delete: func(ctx context.Context, ids []int) error {
 				fmt.Printf("Deletes %s: %d\n", listName, len(ids))
-				_ = client.DropByIDs(ctx, listName, ids)
-				return nil
+				return client.DropByIDs(ctx, listName, ids)
 			},
 			Persist: func(s *spsync.State) {
 				if err := syncState.SaveList(listName, mapSyncState(listName, s, entMD5)); err != nil {
@@ -178,6 +184,22 @@ func getSourceSP() (*api.SP, error) {
 	auth := &strategy.AuthCnfg{
 		SiteURL:  os.Getenv("SP_SOURCE_SITE_URL"),
 		Username: os.Getenv("SP_SOURCE_USERNAME"),
+		Password: password,
+	}
+
+	client := &gosip.SPClient{AuthCnfg: auth}
+	return api.NewSP(client), nil
+}
+
+func getTargetSP() (*api.SP, error) {
+	// _ = godotenv.Load()
+
+	c := cpass.Cpass(os.Getenv("SP_MASTER_KEY"))
+	password, _ := c.Decode(os.Getenv("SP_TARGET_PASSWORD"))
+
+	auth := &strategy.AuthCnfg{
+		SiteURL:  os.Getenv("SP_TARGET_SITE_URL"),
+		Username: os.Getenv("SP_TARGET_USERNAME"),
 		Password: password,
 	}
 

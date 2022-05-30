@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var functionTimeout = 600
+var functionTimeout = 600 * 10 // 600 is for Azure Functions
 
 func main() {
 	_ = godotenv.Load()
