@@ -15,6 +15,7 @@ import (
 	"github.com/koltyakov/sp-time-machine/pkg/state"
 	"github.com/koltyakov/spsync"
 
+	"github.com/koltyakov/gosip-sandbox/strategies/azurecert"
 	strategy "github.com/koltyakov/gosip/auth/saml"
 	"github.com/koltyakov/gosip/cpass"
 	log "github.com/sirupsen/logrus"
@@ -176,8 +177,6 @@ func mapSyncState(listName string, s *spsync.State, hash string) *state.List {
 }
 
 func getSourceSP() (*api.SP, error) {
-	// _ = godotenv.Load()
-
 	c := cpass.Cpass(os.Getenv("SP_MASTER_KEY"))
 	password, _ := c.Decode(os.Getenv("SP_SOURCE_PASSWORD"))
 
@@ -192,15 +191,12 @@ func getSourceSP() (*api.SP, error) {
 }
 
 func getTargetSP() (*api.SP, error) {
-	// _ = godotenv.Load()
-
-	c := cpass.Cpass(os.Getenv("SP_MASTER_KEY"))
-	password, _ := c.Decode(os.Getenv("SP_TARGET_PASSWORD"))
-
-	auth := &strategy.AuthCnfg{
+	auth := &azurecert.AuthCnfg{
 		SiteURL:  os.Getenv("SP_TARGET_SITE_URL"),
-		Username: os.Getenv("SP_TARGET_USERNAME"),
-		Password: password,
+		ClientID: os.Getenv("SP_TARGET_CLIENTID"),
+		TenantID: os.Getenv("SP_TARGET_TENANTID"),
+		CertPath: os.Getenv("SP_TARGET_CERTPATH"),
+		CertPass: os.Getenv("SP_TARGET_CERTPASS"),
 	}
 
 	client := &gosip.SPClient{AuthCnfg: auth}

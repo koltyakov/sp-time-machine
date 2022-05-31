@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/koltyakov/gosip/api"
 	"github.com/koltyakov/sp-time-machine/pkg/providers"
@@ -208,7 +209,9 @@ func (c *Client) mapPayload(entity string, item spsync.Item) (map[string]string,
 		if item.Data["SPFTSheetsJob1Id"] != nil {
 			payload["SPFTSheetsJob1"] = typesMap[fmt.Sprintf("%d", int(item.Data["SPFTSheetsJob1Id"].(float64)))]
 		}
-		payload["SPFTSheetsDate"] = item.Modified.Format("02.01.2006")
+
+		t, _ := time.Parse(time.RFC3339, item.Data["SPFTSheetsDate"].(string))
+		payload["SPFTSheetsDate"] = t.Add(time.Hour * 12).Format("02.01.2006")
 		payload["SPFTSheetsDuration"] = fmt.Sprintf("%d", int(item.Data["SPFTSheetsDuration"].(float64)))
 	}
 

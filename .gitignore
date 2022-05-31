@@ -31,3 +31,4 @@ local.settings.json
 config.jsonc
 state.json
 data/
+private/
