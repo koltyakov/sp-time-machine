@@ -15,7 +15,7 @@ import (
 	"github.com/koltyakov/sp-time-machine/pkg/state"
 	"github.com/koltyakov/spsync"
 
-	"github.com/koltyakov/gosip-sandbox/strategies/azurecert"
+	"github.com/koltyakov/gosip/auth/azurecert"
 	strategy "github.com/koltyakov/gosip/auth/saml"
 	"github.com/koltyakov/gosip/cpass"
 	log "github.com/sirupsen/logrus"
@@ -51,11 +51,6 @@ func Run() error {
 
 	for _, listName := range settings.ActiveLists() {
 		start := time.Now()
-
-		// if err := syncState.Lock(listName); err != nil {
-		// 	log.Warn(err)
-		// 	continue
-		// }
 
 		entState := mapListState(listName, syncState.GetList(listName))
 		entMD5 := state.CheckSum(listName)
