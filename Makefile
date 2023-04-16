@@ -13,7 +13,7 @@ format:
 	gofmt -s -w .
 
 build:
-	go build -o bin/wfsync ./
+	go build -o bin/wfsync ./cmd/worker/...
 	cp config.jsonc bin/config.jsonc
 
 test:
@@ -31,7 +31,7 @@ pack-fns: build-fns
 	cd $(funcRoot) && func pack -o ../infra/package/functions
 
 start-fns:
-	@go build -tags "prod" -o $(funcRoot)/bin/server ./cmd/...
+	@go build -tags "prod" -o $(funcRoot)/bin/server ./cmd/server/...
 	@cd $(funcRoot) && func start # --verbose
 
 publish: build-fns
